@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1212" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="F9q-rP-Fue">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1212" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="2hK-RX-sto">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -100,84 +99,85 @@
                                     </mask>
                                 </variation>
                             </view>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="qji-O2-eLz">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="xpi-A0-1eL">
-                                        <variation key="heightClass=compact" constant="34"/>
-                                    </constraint>
-                                </constraints>
-                                <items>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="0sA-yG-hMa"/>
-                                    <barButtonItem title="Camera" id="JUV-Md-wbS">
-                                        <connections>
-                                            <action selector="onCameraAction:" destination="F9q-rP-Fue" id="1St-92-78l"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="nRL-te-Dgo"/>
-                                    <barButtonItem title="Album" id="UeK-dt-UaE">
-                                        <connections>
-                                            <action selector="onAlbumAction:" destination="F9q-rP-Fue" id="MyG-Xy-GCz"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="m9b-VX-j56"/>
-                                </items>
-                            </toolbar>
-                            <navigationBar contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="eM4-cE-lSg">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="uwv-kH-HC2">
-                                        <variation key="heightClass=compact" constant="34"/>
-                                    </constraint>
-                                </constraints>
-                                <items>
-                                    <navigationItem id="FSq-c4-PCk">
-                                        <barButtonItem key="leftBarButtonItem" systemItem="action" id="R7B-FU-v9g">
-                                            <connections>
-                                                <action selector="onShareAction:" destination="F9q-rP-Fue" id="mJi-aH-l2t"/>
-                                            </connections>
-                                        </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" systemItem="trash" id="14z-kj-uif">
-                                            <connections>
-                                                <action selector="onClearAction:" destination="F9q-rP-Fue" id="URj-wy-V1c"/>
-                                            </connections>
-                                        </barButtonItem>
-                                    </navigationItem>
-                                </items>
-                            </navigationBar>
                         </subviews>
                         <color key="backgroundColor" red="0.098039217289999994" green="0.098039217289999994" blue="0.098039217289999994" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="93y-Gc-4oE" secondAttribute="trailing" id="3PR-ZV-2bU"/>
-                            <constraint firstItem="eM4-cE-lSg" firstAttribute="top" secondItem="7PC-Ea-4g1" secondAttribute="bottom" id="4KB-Kh-8l2"/>
                             <constraint firstItem="93y-Gc-4oE" firstAttribute="leading" secondItem="z9V-wn-6Dk" secondAttribute="leading" id="4WA-O4-pYg"/>
                             <constraint firstAttribute="bottom" secondItem="93y-Gc-4oE" secondAttribute="bottom" constant="44" id="AfB-cI-97T"/>
-                            <constraint firstAttribute="trailing" secondItem="qji-O2-eLz" secondAttribute="trailing" id="Eti-P5-UQ4"/>
-                            <constraint firstItem="4Vn-0N-VHx" firstAttribute="top" secondItem="qji-O2-eLz" secondAttribute="bottom" id="Rey-Ww-aNE"/>
-                            <constraint firstItem="eM4-cE-lSg" firstAttribute="leading" secondItem="z9V-wn-6Dk" secondAttribute="leading" id="rbb-7q-24d"/>
-                            <constraint firstItem="qji-O2-eLz" firstAttribute="leading" secondItem="z9V-wn-6Dk" secondAttribute="leading" id="y6t-uw-05M"/>
-                            <constraint firstAttribute="trailing" secondItem="eM4-cE-lSg" secondAttribute="trailing" id="yUB-Bi-oj0"/>
                         </constraints>
                     </view>
+                    <toolbarItems>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="kcf-kS-0wV"/>
+                        <barButtonItem title="Camera" id="xkf-mg-jm0">
+                            <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="onCameraAction:" destination="F9q-rP-Fue" id="Omg-5m-G3s"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="6hW-9W-bG9"/>
+                        <barButtonItem title="Album" id="XN2-1a-tdq">
+                            <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="onAlbumAction:" destination="F9q-rP-Fue" id="pal-Ix-3CQ"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="5Ya-lw-kkF"/>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" id="FSq-c4-PCk">
+                        <barButtonItem key="leftBarButtonItem" systemItem="action" id="R7B-FU-v9g">
+                            <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="onShareAction:" destination="F9q-rP-Fue" id="mJi-aH-l2t"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="trash" id="14z-kj-uif">
+                            <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="onClearAction:" destination="F9q-rP-Fue" id="URj-wy-V1c"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <nil key="simulatedStatusBarMetrics"/>
                     <connections>
-                        <outlet property="albumButtonItem" destination="UeK-dt-UaE" id="ypH-B8-hXJ"/>
+                        <outlet property="albumButtonItem" destination="XN2-1a-tdq" id="uv1-Io-W6j"/>
                         <outlet property="bottomConstraint" destination="AfB-cI-97T" id="Qoh-Cp-L3Q"/>
                         <outlet property="bottomTextField" destination="Q4k-iv-p9u" id="mQC-B7-8A6"/>
-                        <outlet property="bottomToolbarHeightConstraint" destination="xpi-A0-1eL" id="pW8-0v-oBE"/>
-                        <outlet property="cameraButtonItem" destination="JUV-Md-wbS" id="lo6-ih-ZHk"/>
+                        <outlet property="cameraButtonItem" destination="xkf-mg-jm0" id="kYc-ir-Pf3"/>
                         <outlet property="cancelButtonItem" destination="14z-kj-uif" id="PDQ-8Q-reU"/>
                         <outlet property="heightConstraint" destination="ejR-Mo-mPR" id="d70-4V-gEh"/>
                         <outlet property="imageContainerView" destination="DYA-1z-vtY" id="bJB-wf-qFo"/>
                         <outlet property="memeImageView" destination="DVJ-bo-q9p" id="hCC-Ul-GXQ"/>
                         <outlet property="shareButtonItem" destination="R7B-FU-v9g" id="Vta-11-T6y"/>
                         <outlet property="topTextField" destination="4qO-Ii-gIp" id="NR5-qa-1y0"/>
-                        <outlet property="topToolbarHeightConstraint" destination="uwv-kH-HC2" id="EsS-Hn-MaJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qXU-yJ-NWO" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1176.1619190404799" y="32.799999999999997"/>
+            <point key="canvasLocation" x="2114.4000000000001" y="31.934032983508249"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="tw2-To-QrD">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="2hK-RX-sto" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="vMJ-Fu-BU0">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" id="X2F-Ek-EBV">
+                        <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="F9q-rP-Fue" kind="relationship" relationship="rootViewController" id="vyU-9F-vuF"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8t4-jN-XUD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1175.2" y="31.934032983508249"/>
         </scene>
     </scenes>
     <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>

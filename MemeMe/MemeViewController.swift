@@ -51,7 +51,7 @@ protocol MemeViewControllerDelegate: class {
     func memeController(_ controller: MemeViewController, createdMeme: Meme)
 }
 
-class MemeViewController: UIViewController {
+class MemeViewController: UIViewController, UIBarPositioningDelegate {
     
     weak var delegate: MemeViewControllerDelegate?
     
@@ -98,8 +98,6 @@ class MemeViewController: UIViewController {
     @IBOutlet weak var bottomTextField: UITextField!
     @IBOutlet weak var memeImageView: UIImageView!
     @IBOutlet weak var imageContainerView: UIView!
-    @IBOutlet weak var topToolbarHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var bottomToolbarHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var heightConstraint : NSLayoutConstraint!
     @IBOutlet weak var bottomConstraint : NSLayoutConstraint!
 
@@ -245,37 +243,32 @@ class MemeViewController: UIViewController {
     
     private func updateLayout(traits: UITraitCollection) {
         
-        let regularToolbarSize: CGFloat = 44
-        let compactToolbarSize: CGFloat = 34
-        let toolbarSize: CGFloat
         let inset: CGFloat
         let height: CGFloat
+        let topBarHeight: CGFloat = topLayoutGuide.length
+        let bottomBarHeight: CGFloat = bottomLayoutGuide.length
         let availableHeight: CGFloat = view.bounds.size.height
         
         if traits.verticalSizeClass == .compact {
-            toolbarSize = compactToolbarSize
             if contentInsetRequired && (contentInset > 0) {
                 inset = contentInset
             }
             else {
-                inset = toolbarSize
+                inset = bottomBarHeight
             }
-            height = availableHeight - toolbarSize * 2
+            height = availableHeight - topBarHeight - bottomBarHeight
         }
         else {
-            toolbarSize = regularToolbarSize
             if contentInset > 0 {
                 inset = contentInset
             }
             else {
-                inset = toolbarSize
+                inset = bottomBarHeight
             }
-            height = availableHeight - inset - toolbarSize
+            height = availableHeight - inset - topBarHeight
         }
         bottomConstraint.constant = inset
         heightConstraint.constant = height
-        topToolbarHeightConstraint.constant = toolbarSize
-        bottomToolbarHeightConstraint.constant = toolbarSize
         view.layoutIfNeeded()
     }
     
