@@ -106,10 +106,12 @@ class MemeViewController: UIViewController {
     }
 
     @IBAction func onSaveAction(_ sender: Any) {
+        resignResponders()
         saveImage()
     }
     
     @IBAction func onShareAction(_ sender: Any) {
+        resignResponders()
         exportImage()
     }
     
@@ -304,6 +306,7 @@ class MemeViewController: UIViewController {
     // MARK: Meme
     
     private func resetContent() {
+        resignResponders()
         memeImageView.image = nil
         topTextField.text = defaultTopText
         bottomTextField.text = defaultBottomText
@@ -349,8 +352,7 @@ class MemeViewController: UIViewController {
         guard let image = captureMemeImage() else {
             return
         }
-        resignResponders()
-        showExportViewController(image: image)
+        self?.showExportViewController(image: image)
     }
     
     private func resignResponders() {
