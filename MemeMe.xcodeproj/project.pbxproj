@@ -8,20 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		FC0F149B1E199316007449CF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0F149A1E199316007449CF /* AppDelegate.swift */; };
-		FC0F149D1E199316007449CF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0F149C1E199316007449CF /* ViewController.swift */; };
+		FC0F149D1E199316007449CF /* MemeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0F149C1E199316007449CF /* MemeViewController.swift */; };
 		FC0F14A01E199316007449CF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC0F149E1E199316007449CF /* Main.storyboard */; };
 		FC0F14A21E199316007449CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC0F14A11E199316007449CF /* Assets.xcassets */; };
 		FC0F14A51E199316007449CF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FC0F14A31E199316007449CF /* LaunchScreen.storyboard */; };
+		FC953AE11E1C2C9F0091AE3E /* Impact.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FC953AE01E1BFE6E0091AE3E /* Impact.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		FC0F14971E199316007449CF /* MemeMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MemeMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC0F149A1E199316007449CF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		FC0F149C1E199316007449CF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		FC0F149C1E199316007449CF /* MemeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemeViewController.swift; sourceTree = "<group>"; };
 		FC0F149F1E199316007449CF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FC0F14A11E199316007449CF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FC0F14A41E199316007449CF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FC0F14A61E199316007449CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		FC953AE01E1BFE6E0091AE3E /* Impact.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Impact.ttf; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,10 +57,11 @@
 			isa = PBXGroup;
 			children = (
 				FC0F149A1E199316007449CF /* AppDelegate.swift */,
-				FC0F149C1E199316007449CF /* ViewController.swift */,
+				FC0F149C1E199316007449CF /* MemeViewController.swift */,
 				FC0F149E1E199316007449CF /* Main.storyboard */,
 				FC0F14A11E199316007449CF /* Assets.xcassets */,
 				FC0F14A31E199316007449CF /* LaunchScreen.storyboard */,
+				FC953AE01E1BFE6E0091AE3E /* Impact.ttf */,
 				FC0F14A61E199316007449CF /* Info.plist */,
 			);
 			path = MemeMe;
@@ -124,6 +127,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FC953AE11E1C2C9F0091AE3E /* Impact.ttf in Resources */,
 				FC0F14A51E199316007449CF /* LaunchScreen.storyboard in Resources */,
 				FC0F14A21E199316007449CF /* Assets.xcassets in Resources */,
 				FC0F14A01E199316007449CF /* Main.storyboard in Resources */,
@@ -137,7 +141,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FC0F149D1E199316007449CF /* ViewController.swift in Sources */,
+				FC0F149D1E199316007449CF /* MemeViewController.swift in Sources */,
 				FC0F149B1E199316007449CF /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -302,6 +306,7 @@
 				FC0F14AB1E199316007449CF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
