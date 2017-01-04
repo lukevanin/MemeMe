@@ -47,7 +47,13 @@ class MemeTextFieldDelegate: NSObject, UITextFieldDelegate {
     }
 }
 
+protocol MemeViewControllerDelegate: class {
+    func memeController(_ controller: MemeViewController, createdMeme: Meme)
+}
+
 class MemeViewController: UIViewController {
+    
+    weak var delegate: MemeViewControllerDelegate?
     
     let defaultTopText = "Top Text"
     let defaultBottomText = "Bottom Text"
@@ -85,7 +91,7 @@ class MemeViewController: UIViewController {
     }
 
     @IBOutlet weak var shareButtonItem: UIBarButtonItem!
-    @IBOutlet weak var saveButtonItem: UIBarButtonItem!
+    @IBOutlet weak var cancelButtonItem: UIBarButtonItem!
     @IBOutlet weak var cameraButtonItem: UIBarButtonItem!
     @IBOutlet weak var albumButtonItem: UIBarButtonItem!
     @IBOutlet weak var topTextField: UITextField!
@@ -105,11 +111,6 @@ class MemeViewController: UIViewController {
         importImage(from: .photoLibrary)
     }
 
-    @IBAction func onSaveAction(_ sender: Any) {
-        resignResponders()
-        saveImage()
-    }
-    
     @IBAction func onShareAction(_ sender: Any) {
         resignResponders()
         exportImage()
@@ -137,6 +138,7 @@ class MemeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configureButtons()
+        updateButtons()
         updateLayout(traits: traitCollection)
         observeKeyboardNotifications()
     }
@@ -145,12 +147,6 @@ class MemeViewController: UIViewController {
         super.viewDidDisappear(animated)
         unobserveKeyboardNotifications()
     }
-    
-//    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-//        coordinator.animate(alongsideTransition: { _ in
-//            self.updateLayout()
-//        }, completion: nil)
-//    }
     
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
         coordinator.animate(alongsideTransition: { _ in
@@ -229,6 +225,7 @@ class MemeViewController: UIViewController {
         else {
             contentInsetRequired = false
         }
+        updateButtons()
     }
 
     private func updateLayout(animated: Bool) {
@@ -306,10 +303,66 @@ class MemeViewController: UIViewController {
     // MARK: Meme
     
     private func resetContent() {
-        resignResponders()
         memeImageView.image = nil
         topTextField.text = defaultTopText
         bottomTextField.text = defaultBottomText
+        resignResponders()
+        updateButtons()
+    }
+    
+    func updateButtons() {
+        updateShareButton()
+        updateCancelButton()
+    }
+    
+    private func updateShareButton() {
+        if isCompleted() {
+            shareButtonItem.isEnabled = true
+        }
+        else {
+            shareButtonItem.isEnabled = false
+        }
+    }
+    
+    private func updateCancelButton() {
+        if hasContent() {
+            cancelButtonItem.isEnabled = true
+        }
+        else {
+            cancelButtonItem.isEnabled = false
+        }
+    }
+    
+    private func isCompleted() -> Bool {
+        if getTopText() == nil {
+            return false
+        }
+        
+        if getBottomText() == nil {
+            return false
+        }
+        
+        if memeImageView.image == nil {
+            return false
+        }
+        
+        return true
+    }
+    
+    private func hasContent() -> Bool {
+        if getTopText() != nil {
+            return true
+        }
+        
+        if getBottomText() != nil {
+            return true
+        }
+        
+        if memeImageView.image != nil {
+            return true
+        }
+        
+        return false
     }
     
     private func importImage(from source : UIImagePickerControllerSourceType) {
@@ -319,40 +372,11 @@ class MemeViewController: UIViewController {
         present(viewController, animated: true, completion: nil)
     }
     
-    private func saveImage() {
-        let meme = makeMeme()
-    }
-    
-    private func makeMeme() -> Meme? {
-        guard let topText = topTextField.text, !topText.isEmpty else {
-            return nil
-        }
-        
-        guard let bottomText = bottomTextField.text, !bottomText.isEmpty else {
-            return nil
-        }
-        
-        guard let originalImage = memeImageView.image else {
-            return nil
-        }
-        
-        guard let memedImage = captureMemeImage() else {
-            return nil
-        }
-        
-        return Meme(
-            topText: topText,
-            bottomText: bottomText,
-            originalImage: originalImage,
-            memedImage: memedImage
-        )
-    }
-    
     private func exportImage() {
         guard let image = captureMemeImage() else {
             return
         }
-        self?.showExportViewController(image: image)
+        showExportViewController(image: image)
     }
     
     private func resignResponders() {
@@ -365,6 +389,14 @@ class MemeViewController: UIViewController {
             activityItems: [image],
             applicationActivities: nil
         )
+        viewController.completionWithItemsHandler = { [weak self] activityType, completed, returnedItems, activityError in
+            if let error = activityError {
+                self?.showAlert(for: error)
+            }
+            else if completed {
+                self?.saveMeme(image)
+            }
+        }
         present(viewController, animated: true, completion: nil)
     }
     
@@ -378,6 +410,58 @@ class MemeViewController: UIViewController {
         let outputImage : UIImage? = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return outputImage
+    }
+    
+    private func saveMeme(_ image: UIImage) {
+        // Create meme object and pass to delegate.
+        guard let meme = makeMeme(image: image) else {
+            return
+        }
+        delegate?.memeController(self, createdMeme: meme)
+    }
+    
+    private func makeMeme(image: UIImage) -> Meme? {
+        guard let topText = getTopText() else {
+            return nil
+        }
+        
+        guard let bottomText = getBottomText() else {
+            return nil
+        }
+        
+        guard let originalImage = memeImageView.image else {
+            return nil
+        }
+        
+        return Meme(
+            topText: topText,
+            bottomText: bottomText,
+            originalImage: originalImage,
+            memedImage: image
+        )
+    }
+    
+    private func getTopText() -> String? {
+        guard let text = topTextField.text, text != defaultTopText, !text.isEmpty else {
+            return nil
+        }
+        return text
+    }
+    
+    private func getBottomText() -> String? {
+        guard let text = bottomTextField.text, text != defaultBottomText, !text.isEmpty else {
+            return nil
+        }
+        return text
+    }
+    
+    private func showAlert(for error: Error) {
+        print("Cannot save meme > \(error)")
+        let title = "Oops, something went wrong."
+        let message = "The meme could not be saved."
+        let controller = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        controller.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
+        present(controller, animated: true, completion: nil)
     }
 }
 
@@ -397,6 +481,7 @@ extension MemeViewController: UIImagePickerControllerDelegate, UINavigationContr
         }
         print("picked image: \(image)")
         memeImageView.image = image
+        updateButtons()
     }
 }
 

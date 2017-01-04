@@ -7,7 +7,6 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -36,7 +35,7 @@
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="DVJ-bo-q9p">
                                                 <rect key="frame" x="0.0" y="0.0" width="375" height="281"/>
-                                                <color key="backgroundColor" red="0.75559091567993164" green="0.75556838512420654" blue="0.75558114051818848" alpha="1" colorSpace="calibratedRGB"/>
+                                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             </imageView>
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" placeholder="Bottom Text" textAlignment="center" minimumFontSize="20" translatesAutoresizingMaskIntoConstraints="NO" id="Q4k-iv-p9u">
                                                 <rect key="frame" x="10" y="221" width="355" height="50"/>
@@ -115,6 +114,7 @@
                                             <action selector="onCameraAction:" destination="F9q-rP-Fue" id="1St-92-78l"/>
                                         </connections>
                                     </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="nRL-te-Dgo"/>
                                     <barButtonItem title="Album" id="UeK-dt-UaE">
                                         <connections>
                                             <action selector="onAlbumAction:" destination="F9q-rP-Fue" id="MyG-Xy-GCz"/>
@@ -132,21 +132,14 @@
                                 </constraints>
                                 <items>
                                     <navigationItem id="FSq-c4-PCk">
-                                        <leftBarButtonItems>
-                                            <barButtonItem systemItem="action" id="R7B-FU-v9g">
-                                                <connections>
-                                                    <action selector="onShareAction:" destination="F9q-rP-Fue" id="mJi-aH-l2t"/>
-                                                </connections>
-                                            </barButtonItem>
-                                            <barButtonItem systemItem="trash" id="14z-kj-uif">
-                                                <connections>
-                                                    <action selector="onClearAction:" destination="F9q-rP-Fue" id="URj-wy-V1c"/>
-                                                </connections>
-                                            </barButtonItem>
-                                        </leftBarButtonItems>
-                                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="mzw-ov-bAA">
+                                        <barButtonItem key="leftBarButtonItem" systemItem="action" id="R7B-FU-v9g">
                                             <connections>
-                                                <action selector="onSaveAction:" destination="F9q-rP-Fue" id="ieT-eM-KWD"/>
+                                                <action selector="onShareAction:" destination="F9q-rP-Fue" id="mJi-aH-l2t"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" systemItem="trash" id="14z-kj-uif">
+                                            <connections>
+                                                <action selector="onClearAction:" destination="F9q-rP-Fue" id="URj-wy-V1c"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>
@@ -173,6 +166,7 @@
                         <outlet property="bottomTextField" destination="Q4k-iv-p9u" id="mQC-B7-8A6"/>
                         <outlet property="bottomToolbarHeightConstraint" destination="xpi-A0-1eL" id="pW8-0v-oBE"/>
                         <outlet property="cameraButtonItem" destination="JUV-Md-wbS" id="lo6-ih-ZHk"/>
+                        <outlet property="cancelButtonItem" destination="14z-kj-uif" id="PDQ-8Q-reU"/>
                         <outlet property="heightConstraint" destination="ejR-Mo-mPR" id="d70-4V-gEh"/>
                         <outlet property="imageContainerView" destination="DYA-1z-vtY" id="bJB-wf-qFo"/>
                         <outlet property="memeImageView" destination="DVJ-bo-q9p" id="hCC-Ul-GXQ"/>
