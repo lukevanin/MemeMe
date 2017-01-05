@@ -98,6 +98,7 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
     @IBOutlet weak var bottomTextField: UITextField!
     @IBOutlet weak var memeImageView: UIImageView!
     @IBOutlet weak var imageContainerView: UIView!
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var heightConstraint : NSLayoutConstraint!
     @IBOutlet weak var bottomConstraint : NSLayoutConstraint!
 
@@ -107,6 +108,10 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
     
     @IBAction func onAlbumAction(_ sender: Any) {
         importImage(from: .photoLibrary)
+    }
+    
+    @IBAction func onImportAction(_ sender: Any) {
+        showImageSourceSelection()
     }
 
     @IBAction func onShareAction(_ sender: Any) {
@@ -270,6 +275,7 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
         bottomConstraint.constant = inset
         heightConstraint.constant = height
         view.layoutIfNeeded()
+        configureImageZoom()
     }
     
     private func configureButtons() {
@@ -290,6 +296,47 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
         bottomTextField.defaultTextAttributes = memeTextAttributes
         bottomTextField.textAlignment = .center
         bottomTextField.delegate = bottomTextFieldDelegate
+    }
+    
+    fileprivate func configureImageZoom() {
+        guard let image = memeImageView.image else {
+            return
+        }
+
+        let imageSize = image.size
+        let containerSize = scrollView.bounds.size
+        
+        let imageAspect = imageSize.width / imageSize.height
+        let containerAspect = containerSize.width / containerSize.height
+        let minimumScale: CGFloat
+        let maximumScale: CGFloat
+        
+        if imageAspect > containerAspect {
+            // Image aspect ratio is wider than container. Fit vertically.
+            minimumScale = containerSize.height / imageSize.height
+        }
+        else {
+            // Image aspect ratio is narrower than container. Fit horizontally.
+            minimumScale = containerSize.width / imageSize.width
+        }
+        
+        // Ensure maximum zoom is always same as or greater than minimum zoom.
+        maximumScale = max(1.0, minimumScale)
+        
+        // Calculate minimum zoom level so that image fits entirely in available space without any gaps.
+        scrollView.minimumZoomScale = minimumScale
+        
+        // Calculate maximum zoom level so that image is not scaled past a maximum size.
+        scrollView.maximumZoomScale = maximumScale
+        
+        // Ensure current zoom is within bounds.
+        let currentScale = min(max(scrollView.zoomScale, minimumScale), maximumScale)
+        scrollView.zoomScale = currentScale
+    }
+    
+    fileprivate func setDefaultImageScale() {
+        // Set default zoom to minimum zoom.
+        scrollView.zoomScale = scrollView.minimumZoomScale
     }
     
     
@@ -357,6 +404,39 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
         
         return false
     }
+    
+    private func showImageSourceSelection() {
+        let controller = UIAlertController(title: "Select Image", message: nil, preferredStyle: .actionSheet)
+        
+        controller.addAction(
+            UIAlertAction(
+                title: "Album",
+                style: .default,
+                handler: { [weak self] (action) in
+                    self?.importImage(from: .photoLibrary)
+            })
+        )
+        
+        controller.addAction(
+            UIAlertAction(
+                title: "Camera",
+                style: .default,
+                handler: { [weak self] (action) in
+                    self?.importImage(from: .camera)
+            })
+        )
+        
+        controller.addAction(
+            UIAlertAction(
+                title: "Dismiss",
+                style: .cancel,
+                handler: nil
+            )
+        )
+        
+        present(controller, animated: true, completion: nil)
+    }
+    
     
     private func importImage(from source : UIImagePickerControllerSourceType) {
         let viewController = UIImagePickerController()
@@ -458,6 +538,13 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
     }
 }
 
+extension MemeViewController: UIScrollViewDelegate {
+    
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        return memeImageView
+    }
+}
+
 extension MemeViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -474,6 +561,8 @@ extension MemeViewController: UIImagePickerControllerDelegate, UINavigationContr
         }
         print("picked image: \(image)")
         memeImageView.image = image
+        configureImageZoom()
+        setDefaultImageScale()
         updateButtons()
     }
 }
