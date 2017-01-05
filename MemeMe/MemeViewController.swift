@@ -38,6 +38,7 @@ class MemeTextFieldDelegate: NSObject, UITextFieldDelegate {
         if textField.text?.isEmpty ?? true {
             textField.text = defaultText
         }
+        textField.isUserInteractionEnabled = false
         onEditing?(textField)
     }
     
@@ -49,6 +50,13 @@ class MemeTextFieldDelegate: NSObject, UITextFieldDelegate {
 
 protocol MemeViewControllerDelegate: class {
     func memeController(_ controller: MemeViewController, createdMeme: Meme)
+}
+
+extension UIGestureRecognizer {
+    func isContained(in view: UIView) -> Bool {
+        let p = location(in: view)
+        return view.bounds.contains(p)
+    }
 }
 
 class MemeViewController: UIViewController, UIBarPositioningDelegate {
@@ -103,15 +111,28 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
     @IBOutlet weak var bottomConstraint : NSLayoutConstraint!
 
     @IBAction func onCameraAction(_ sender: Any) {
+        resignResponders()
         importImage(from: .camera)
     }
     
     @IBAction func onAlbumAction(_ sender: Any) {
+        resignResponders()
         importImage(from: .photoLibrary)
     }
     
-    @IBAction func onImportAction(_ sender: Any) {
-        showImageSourceSelection()
+    @IBAction func onImageAction(_ sender: UIGestureRecognizer) {
+        if sender.isContained(in: topTextField) {
+            topTextField.isUserInteractionEnabled = true
+            topTextField.becomeFirstResponder()
+        }
+        else if sender.isContained(in: bottomTextField) {
+            bottomTextField.isUserInteractionEnabled = true
+            bottomTextField.becomeFirstResponder()
+        }
+        else {
+            resignResponders()
+            showImageSourceSelection()
+        }
     }
 
     @IBAction func onShareAction(_ sender: Any) {
@@ -121,6 +142,7 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
     
     @IBAction func onClearAction(_ sender: Any) {
         // TODO: Show prompt to clear
+        resignResponders()
         resetContent()
     }
     
@@ -135,6 +157,7 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
         super.viewDidLoad()
         listInstalledFonts()
         configureTextFields()
+        configureScrollView()
         resetContent()
     }
     
@@ -296,6 +319,14 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
         bottomTextField.defaultTextAttributes = memeTextAttributes
         bottomTextField.textAlignment = .center
         bottomTextField.delegate = bottomTextFieldDelegate
+    }
+    
+    fileprivate func configureScrollView() {
+        if let gestureRecognizer = scrollView.pinchGestureRecognizer {
+            imageContainerView.addGestureRecognizer(gestureRecognizer)
+        }
+        
+        imageContainerView.addGestureRecognizer(scrollView.panGestureRecognizer)
     }
     
     fileprivate func configureImageZoom() {
