@@ -2,11 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
+      "filename" : "3b4968f7a8c56b10c8183597a4f9775a.jpg",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "687474703a2f2f692e696d6775722e636f6d2f4e577a764a6d6d2e706e67.png",
       "scale" : "2x"
     },
     {
@@ -17,8 +17,5 @@
   "info" : {
     "version" : 1,
     "author" : "xcode"
-  },
-  "properties" : {
-    "compression-type" : "lossless"
   }
 }

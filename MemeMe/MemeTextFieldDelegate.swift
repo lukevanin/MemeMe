@@ -42,9 +42,6 @@ class MemeTextFieldDelegate: NSObject, UITextFieldDelegate {
             textField.text = defaultText
         }
         
-        // Disable user interaction on text field otherwise it interferes with the pan&pinch gestures on the scroll view.
-        textField.isUserInteractionEnabled = false
-        
         // Notify the completion handler that the editing state has changed.
         onEditing?(textField)
     }

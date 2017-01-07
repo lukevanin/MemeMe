@@ -69,11 +69,12 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
     @IBOutlet weak var bottomTextField: UITextField!
     @IBOutlet weak var memeImageView: UIImageView!
     @IBOutlet weak var imageContainerView: UIView!
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var heightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    @IBOutlet var verticalConstraints: [NSLayoutConstraint]!
-    @IBOutlet var horizontalConstraints: [NSLayoutConstraint]!
+    @IBOutlet weak var imageAspectConstraint: NSLayoutConstraint!
+    
+    // Using strong references to constraints since the constraint can be disabled at runtime, which would result in the 
+    // constraint being deallocated.
+    @IBOutlet var offsetConstraint: NSLayoutConstraint!
+    @IBOutlet var centerConstraint: NSLayoutConstraint!
 
     //
     //  Camera toolbar button item tapped. Import an image from the camera.
@@ -162,7 +163,6 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
         super.viewDidLoad()
         listInstalledFonts()
         configureTextFields()
-        configureScrollView()
         resetContent()
     }
     
@@ -300,41 +300,21 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
     //
     private func updateLayout() {
         
-        let inset: CGFloat
-        let height: CGFloat
-        let topBarHeight: CGFloat = topLayoutGuide.length
-        let bottomBarHeight: CGFloat = bottomLayoutGuide.length
-        let availableHeight: CGFloat = view.bounds.size.height
-        let constraints: [NSLayoutConstraint]
-        
-        if isLandscape() {
-            if contentInsetRequired && (contentInset > 0) {
-                inset = contentInset
-            }
-            else {
-                inset = bottomBarHeight
-            }
-            height = availableHeight - topBarHeight - bottomBarHeight
-            constraints = horizontalConstraints
+        if contentInsetRequired && (contentInset > 0) {
+            // Editing bottom textfield.
+            // Shift content to accomodate keyboard.
+            centerConstraint.isActive = false
+            offsetConstraint.isActive = true
+            offsetConstraint.constant = contentInset
         }
         else {
-            if contentInset > 0 {
-                inset = contentInset
-            }
-            else {
-                inset = bottomBarHeight
-            }
-            height = availableHeight - inset - topBarHeight
-            constraints = verticalConstraints
+            // Editing top textfield.
+            // Leave content aligned to center.
+            centerConstraint.isActive = true
+            offsetConstraint.isActive = false
         }
-        
-        NSLayoutConstraint.deactivate(horizontalConstraints)
-        NSLayoutConstraint.deactivate(verticalConstraints)
-        NSLayoutConstraint.activate(constraints)
-        bottomConstraint.constant = inset
-        heightConstraint.constant = height
+
         view.layoutIfNeeded()
-        configureImageZoom()
     }
     
     //
@@ -358,16 +338,17 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
     //  Apply default text attributes (stroke and colour), and setup text field delegates for editing.
     //
     private func configureTextFields() {
-        
-        // Configure top text field
-        topTextField.defaultTextAttributes = memeTextAttributes
-        topTextField.textAlignment = .center
-        topTextField.delegate = topTextFieldDelegate
-        
-        // Configure bottom text field
-        bottomTextField.defaultTextAttributes = memeTextAttributes
-        bottomTextField.textAlignment = .center
-        bottomTextField.delegate = bottomTextFieldDelegate
+        configureTextField(textField: topTextField, withDelegate: topTextFieldDelegate)
+        configureTextField(textField: bottomTextField, withDelegate: bottomTextFieldDelegate)
+    }
+    
+    //
+    //
+    //
+    private func configureTextField(textField: UITextField, withDelegate delegate: MemeTextFieldDelegate) {
+        textField.defaultTextAttributes = memeTextAttributes
+        textField.textAlignment = .center
+        textField.delegate = delegate
     }
     
     //
@@ -376,19 +357,6 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
     private func resignResponders() {
         topTextField.resignFirstResponder()
         bottomTextField.resignFirstResponder()
-    }
-
-    //
-    //  Move the gesture recognizers for the scroll view to the image container view. This allows the pan and pinch 
-    //  gestures to be recognized even when the gestures are initiated over text fields which are in front of the scroll 
-    //  view.
-    //
-    fileprivate func configureScrollView() {
-        if let gestureRecognizer = scrollView.pinchGestureRecognizer {
-            imageContainerView.addGestureRecognizer(gestureRecognizer)
-        }
-        
-        imageContainerView.addGestureRecognizer(scrollView.panGestureRecognizer)
     }
     
     //
@@ -400,50 +368,42 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
     //  The maximum scale factor is set so that the image can never exceed a 1:1 scale. The maximum scale is always 
     //  larger than the minimum scale.
     //
-    fileprivate func configureImageZoom() {
-        guard let image = memeImageView.image else {
-            return
-        }
-
-        let imageSize = image.size
-        let containerSize = scrollView.bounds.size
-        
-        let imageAspect = imageSize.width / imageSize.height
-        let containerAspect = containerSize.width / containerSize.height
-        let minimumScale: CGFloat
-        let maximumScale: CGFloat
-        
-        if imageAspect > containerAspect {
-            // Image aspect ratio is wider than container. Fit vertically.
-            minimumScale = containerSize.height / imageSize.height
-        }
-        else {
-            // Image aspect ratio is narrower than container. Fit horizontally.
-            minimumScale = containerSize.width / imageSize.width
-        }
-        
-        // Ensure maximum zoom is always same as or greater than minimum zoom.
-        maximumScale = max(1.0, minimumScale)
-        
-        // Calculate minimum zoom level so that image fits entirely in available space without any gaps.
-        scrollView.minimumZoomScale = minimumScale
-        
-        // Calculate maximum zoom level so that image is not scaled past a maximum size.
-        scrollView.maximumZoomScale = maximumScale
-        
-        // Ensure current zoom is within bounds.
-        let currentScale = min(max(scrollView.zoomScale, minimumScale), maximumScale)
-        scrollView.zoomScale = currentScale
-    }
+//    fileprivate func configureImageZoom() {
+//        guard let image = memeImageView.image else {
+//            return
+//        }
+//
+//        let imageSize = image.size
+//        let containerSize = scrollView.bounds.size
+//        
+//        let imageAspect = imageSize.width / imageSize.height
+//        let containerAspect = containerSize.width / containerSize.height
+//        let minimumScale: CGFloat
+//        let maximumScale: CGFloat
+//        
+//        if imageAspect > containerAspect {
+//            // Image aspect ratio is wider than container. Fit vertically.
+//            minimumScale = containerSize.height / imageSize.height
+//        }
+//        else {
+//            // Image aspect ratio is narrower than container. Fit horizontally.
+//            minimumScale = containerSize.width / imageSize.width
+//        }
+//        
+//        // Ensure maximum zoom is always same as or greater than minimum zoom.
+//        maximumScale = max(1.0, minimumScale)
+//        
+//        // Calculate minimum zoom level so that image fits entirely in available space without any gaps.
+//        scrollView.minimumZoomScale = minimumScale
+//        
+//        // Calculate maximum zoom level so that image is not scaled past a maximum size.
+//        scrollView.maximumZoomScale = maximumScale
+//        
+//        // Ensure current zoom is within bounds.
+//        let currentScale = min(max(scrollView.zoomScale, minimumScale), maximumScale)
+//        scrollView.zoomScale = currentScale
+//    }
     
-    //
-    //  Zoom the image to the minimum scale to reveal as much area as possible. The user can asjust the scale factor as
-    //  needed by pinching on the scroll view.
-    //
-    fileprivate func setDefaultImageScale() {
-        // Set default zoom to minimum zoom.
-        scrollView.zoomScale = scrollView.minimumZoomScale
-    }
     
     
     // MARK: Meme
@@ -455,9 +415,22 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
         memeImageView.image = nil
         topTextField.text = defaultTopText
         bottomTextField.text = defaultBottomText
-        scrollView.contentOffset = CGPoint.zero
+        setImageConstraintWithAspectRatio(1.0)
         resignResponders()
         updateButtons()
+    }
+    
+    //
+    //
+    //
+    func setImageConstraintWithAspectRatio(_ aspect: CGFloat) {
+        if let constraint = imageAspectConstraint {
+            memeImageView.removeConstraint(constraint)
+        }
+        imageAspectConstraint = memeImageView.widthAnchor.constraint(equalTo: memeImageView.heightAnchor, multiplier: aspect)
+        if let constraint = imageAspectConstraint {
+            memeImageView.addConstraint(constraint)
+        }
     }
     
     //
@@ -542,27 +515,13 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
         let controller = UIAlertController(title: "Select Image", message: nil, preferredStyle: .actionSheet)
         
         // Add Album option if photo library is available.
-        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
-            controller.addAction(
-                UIAlertAction(
-                    title: "Album",
-                    style: .default,
-                    handler: { [weak self] (action) in
-                        self?.importImage(from: .photoLibrary)
-                })
-            )
+        if let action = makeAction(caption: "Album", sourceType: .photoLibrary) {
+            controller.addAction(action)
         }
         
         // Add Camera option if camera is available.
-        if UIImagePickerController.isSourceTypeAvailable(.camera) {
-            controller.addAction(
-                UIAlertAction(
-                    title: "Camera",
-                    style: .default,
-                    handler: { [weak self] (action) in
-                        self?.importImage(from: .camera)
-                })
-            )
+        if let action = makeAction(caption: "Camera", sourceType: .camera) {
+            controller.addAction(action)
         }
         
         // Add default dimiss action.
@@ -585,6 +544,21 @@ class MemeViewController: UIViewController, UIBarPositioningDelegate {
         
         // Show action sheet.
         present(controller, animated: true, completion: nil)
+    }
+    
+    //
+    //
+    //
+    private func makeAction(caption: String, sourceType: UIImagePickerControllerSourceType) -> UIAlertAction? {
+        guard UIImagePickerController.isSourceTypeAvailable(.photoLibrary) else {
+            return nil
+        }
+        return UIAlertAction(
+            title: caption,
+            style: .default,
+            handler: { [weak self] (action) in
+                self?.importImage(from: sourceType)
+        })
     }
     
     //
@@ -758,8 +732,9 @@ extension MemeViewController: UIImagePickerControllerDelegate, UINavigationContr
         }
         print("picked image: \(image)")
         memeImageView.image = image
-        configureImageZoom()
-        setDefaultImageScale()
+        let size = image.size
+        let aspect = size.width / size.height
+        setImageConstraintWithAspectRatio(aspect)
         updateButtons()
     }
 }
